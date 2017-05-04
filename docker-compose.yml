@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  devenv:
+    image: stono/devenv
+    restart: always
+    command: /bin/bash
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ~/.ssh:/root/.ssh:ro
+      - ./storage:/storage
+
+  redis:
+    image: redis:alpine
+    restart: always
