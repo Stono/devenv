@@ -11,8 +11,8 @@ services:
       - redis
       - rabbitmq
     volumes:
-      - ~/.ssh:/root/.ssh:ro
-      - ~/.gitconfig:/root/.gitconfig
+      - ~/.ssh:/home/docker/.ssh:ro
+      - ~/.gitconfig:/home/docker/.gitconfig
       - code:/storage
 
   redis:

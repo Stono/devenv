@@ -6,8 +6,6 @@ RUN sed -i '/enabled=1/ c\enabled=0' /etc/yum/pluginconf.d/fastestmirror.conf
 
 # Set the environment up
 ENV TERM xterm-256color
-RUN mkdir -p /storage
-WORKDIR /storage
 
 # Install the EPEL repository and do a yum update
 RUN yum -y -q install http://www.mirrorservice.org/sites/dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm && \ 
@@ -26,6 +24,10 @@ RUN cd /usr/local/bin && \
 
 RUN groupadd docker && \
     useradd -g docker docker
+
+RUN mkdir -p /storage
+WORKDIR /storage
+RUN chown docker:docker /storage
 
 USER docker
 ENV HOME=/home/docker
@@ -90,5 +92,3 @@ RUN /bin/bash -l -c "nvm install 7.9"
 # Add Ruby and RVM
 RUN /bin/bash -l -c "rvm install 2.4"
 RUN /bin/bash -l -c "gem install bundler"
-
-VOLUME /storage
