@@ -12,7 +12,7 @@ WORKDIR /storage
 # Install the EPEL repository and do a yum update
 RUN yum -y -q install http://www.mirrorservice.org/sites/dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm && \ 
     yum -y -q update && \
-    yum -y -q install gcc-c++ make git python-setuptools tar wget curl sudo which passwd vim cmake python-devel && \
+    yum -y -q install gcc-c++ make git python-setuptools tar wget curl sudo which passwd vim cmake python-devel wemux tmux telnet httpie redis && \
     yum -y -q clean all
 
 # Clone on the .vimrc stuff
@@ -80,3 +80,5 @@ RUN /bin/bash -l -c "gem install bundler"
 
 # Install ansible
 RUN yum -y -q install ansible-2.3.0*
+
+VOLUME /storage

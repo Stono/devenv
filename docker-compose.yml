@@ -1,17 +1,28 @@
-version: '2'
+version: '3'
 
 services:
   devenv:
     image: stono/devenv
     restart: always
     command: /bin/bash
-    build:
-      context: .
-      dockerfile: Dockerfile
+    network_mode: 'service:redis'
+    build: .
+    depends_on:
+      - redis
+      - rabbitmq
     volumes:
       - ~/.ssh:/root/.ssh:ro
-      - ./storage:/storage
+      - ~/.gitconfig:/root/.gitconfig
+      - code:/storage
 
   redis:
-    image: redis:alpine
+    image: redis:3.2.8
     restart: always
+
+  rabbitmq:
+    image: rabbitmq:3.6.9-management 
+    network_mode: 'service:redis'
+    restart: always
+
+volumes:
+  code:
