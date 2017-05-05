@@ -1,0 +1,41 @@
+{
+  "swagger": "2.0",
+  "basePath": "/v1",
+  "host": "127.0.0.1:9000",
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "name": "x-api-key",
+      "in": "header"
+    }
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "definitions": {
+    "$ref": "./definitions/index.yaml"
+  },
+  "info": {
+    "$ref": "./info/index.yaml"
+  },
+  "tags": [
+    {
+      "name": "subscription",
+      "description": "Manage subscriptions"
+    },
+    {
+      "name": "namespace",
+      "description": "Manage namespaces (aka swagger tags)"
+    }
+  ],
+  "paths": {
+    "$ref": "./paths/index.yaml"
+  }
+}

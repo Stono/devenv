@@ -94,6 +94,8 @@ if [ "$USER" == "root" ]; then
   UColor=$BPurple
 fi
 
+source /usr/local/bin/git-prompt.sh
+
 export PS1="$BBlack[$UColor$USER@devenv$Color_Off"'$(git branch &>/dev/null;\
 if [ $? -eq 0 ] && declare -f __git_ps1 > /dev/null; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
