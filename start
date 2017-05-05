@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ "docker-compose ps -q | wc -l | xargs" = "1" ]; then
-	docker exec -it $(docker-compose ps -q) /bin/bash
+if [ "$(docker-compose ps -q devenv | wc -l | xargs)" = "1" ]; then
+	docker exec -it $(docker-compose ps -q devenv) /bin/bash
 else
-	docker-compose run --rm devenv /bin/bash
+	docker-compose run --rm devenv
 fi

@@ -1,15 +1,18 @@
 version: '3'
 
 services:
+  bridge:
+    build: .
+    restart: always
+    command: sleep infinity
+    ports:
+      - 15672:15672
+   
   devenv:
     image: stono/devenv
-    restart: always
-    command: /bin/bash
-    network_mode: 'service:redis'
+    network_mode: 'service:bridge'
+    command: /bin/bash 
     build: .
-    depends_on:
-      - redis
-      - rabbitmq
     volumes:
       - ~/.ssh:/home/docker/.ssh:ro
       - ~/.gitconfig:/home/docker/.gitconfig
@@ -17,12 +20,13 @@ services:
 
   redis:
     image: redis:3.2.8
+    network_mode: 'service:bridge'
     restart: always
 
   rabbitmq:
     image: rabbitmq:3.6.9-management 
-    network_mode: 'service:redis'
+    network_mode: 'service:bridge'
     restart: always
-
+    
 volumes:
   code:
