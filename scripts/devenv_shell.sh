@@ -94,22 +94,6 @@ if [ "$USER" == "root" ]; then
   UColor=$BPurple
 fi
 
-# Check if we have git_ps1
-if ! declare -f __git_ps1 > /dev/null; then
-    if [ ! -f "/usr/local/bin/.git-prompt.sh" ]; then
-        wget --quiet -P /tmp https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
-        if [ $? -eq 0 ]; then
-            mv /tmp/git-prompt.sh /usr/local/bin/.git-prompt.sh
-            source /usr/local/bin/.git-prompt.sh
-        else
-            echo Attempted to download git-prompt for git command line support but download failed!
-        fi
-    else
-        source /usr/local/bin/.git-prompt.sh
-    fi
-fi
-
-# I appreciate we're not using git in hpess/base, but it just makes it easier for the future
 export PS1="$BBlack[$UColor$USER@devenv$Color_Off"'$(git branch &>/dev/null;\
 if [ $? -eq 0 ] && declare -f __git_ps1 > /dev/null; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \

@@ -12,12 +12,44 @@ WORKDIR /storage
 # Install the EPEL repository and do a yum update
 RUN yum -y -q install http://www.mirrorservice.org/sites/dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm && \ 
     yum -y -q update && \
-    yum -y -q install gcc-c++ make git python-setuptools tar wget curl sudo which passwd vim cmake python-devel wemux tmux telnet httpie redis && \
+    yum -y -q install gcc-c++ make git python-setuptools tar wget curl sudo which passwd vim cmake python-devel wemux tmux telnet httpie redis ansible-2.3.0* && \
+		# rvm requirements
+		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
     yum -y -q clean all
 
+# Add the profile scripts 
+COPY scripts/* /usr/local/bin/
+RUN ln -s /usr/local/bin/devenv_shell.sh /etc/profile.d/devenv_shell.sh
+
+RUN cd /usr/local/bin && \
+		wget --quiet -P /tmp https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+
+RUN groupadd docker && \
+    useradd -g docker docker
+
+USER docker
+ENV HOME=/home/docker
+ENV USER=docker
+
+# Gem GPG2
+RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+
+# Add all our config files
+COPY home $HOME/
+
+# RVM 
+RUN \curl -L https://get.rvm.io | bash -s stable
+
+# NVM
+RUN cd /tmp && \
+		wget --quiet https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh && \
+		chmod +x install.sh && \
+		./install.sh && \
+		rm install.sh
+
 # Clone on the .vimrc stuff
-RUN mkdir -p /root/.vim/vim-addons && \
-    cd /root/.vim/vim-addons && \
+RUN mkdir -p $HOME/.vim/vim-addons && \
+    cd $HOME/.vim/vim-addons && \
     git clone --depth=1 https://github.com/MarcWeber/vim-addon-manager && \
     git clone --depth=1 https://github.com/tpope/vim-fugitive && \
     git clone --depth=1 https://github.com/airblade/vim-gitgutter && \
@@ -47,38 +79,16 @@ RUN mkdir -p /root/.vim/vim-addons && \
 		git clone --depth=1 https://github.com/goatslacker/mango.vim && \
 		git clone --depth=1 https://bitbucket.org/vimcommunity/vim-pi 
 
-RUN cd /root/.vim/vim-addons/YouCompleteMe && \
+# Compile YouCompleteMe
+RUN cd $HOME/.vim/vim-addons/YouCompleteMe && \
    	git submodule update --init --recursive && \
 		./install.sh
  
-# Add all our config files
-COPY home /root/
-
-
-# Add the profile scripts 
-COPY scripts/* /usr/local/bin/
-RUN ln -s /usr/local/bin/devenv_shell.sh /etc/profile.d/devenv_shell.sh
-
-# NodeJS pre-reqs
-RUN cd /tmp && \
-		wget --quiet https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh && \
-		chmod +x install.sh && \
-		./install.sh && \
-		rm install.sh
-
-# Ruby pre-reqs
-RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-RUN \curl -L https://get.rvm.io | bash -s stable
-RUN mkdir -p /root/.bundle
-
 # Add NodeJS
 RUN /bin/bash -l -c "nvm install 7.9"
 
 # Add Ruby and RVM
 RUN /bin/bash -l -c "rvm install 2.4"
 RUN /bin/bash -l -c "gem install bundler"
-
-# Install ansible
-RUN yum -y -q install ansible-2.3.0*
 
 VOLUME /storage
