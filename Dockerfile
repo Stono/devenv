@@ -179,7 +179,6 @@ RUN /bin/bash -l -c "gem install bundler bundler-audit"
 # Add NodeJS
 ENV NODEJS_VERSION=8.1.4
 RUN /bin/bash -l -c "nvm install $NODEJS_VERSION && nvm use $NODEJS_VERSION"
-RUN /bin/bash -l -c "npm config set package-lock false"
 
 ENV CLI_PEOPLEDATA_VERSION=1.2.44
 RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$CLI_PEOPLEDATA_VERSION"
