@@ -14,16 +14,14 @@ services:
     environment:
       - DOCKER_HOST=tcp://127.0.0.1:2375
 
-  samba:
-    image: dperson/samba
-    command: -u "docker;docker" -s "code;/code;yes;no;no;docker;docker;docker"
+  nfs:
+    image: erezhorev/dockerized_nfs_server
     volumes:
-      - code:/code
-    environment:
-      - USERID=1000
-      - GROUPID=1000
+      - code:/exports
+    cap_add:
+      - SYS_ADMIN
     ports:
-      - 127.0.0.1:139:139
+      - 2049:2049
 
   dind:
     image: docker:stable-dind
