@@ -10,21 +10,12 @@ services:
       - ~/.gitconfig:/home/docker/.gitconfig:ro
       - ~/.config/gcloud:/home/docker/.config/gcloud
       - ./host:/host
+      # If you want to edit files on your host
+      # change this to ./code:/storage, it will be
+      # slower though as bind mounts suck.
       - code:/storage
     environment:
       - DOCKER_HOST=tcp://127.0.0.1:2375
-
-  nfs:
-    image: itsthenetwork/nfs-server-alpine:latest
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=1
-    volumes:
-      - code:/nfsshare
-    environment:
-      - SHARED_DIRECTORY=/nfsshare
-    privileged: true
-    ports:
-      - 127.0.0.1:1337:2049
 
   dind:
     image: docker:stable-dind

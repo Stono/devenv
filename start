@@ -2,16 +2,8 @@
 if [ "$(docker-compose ps -q devenv | wc -l | xargs)" = "1" ]; then
   docker exec -it $(docker-compose ps -q devenv) /bin/bash --login
 else
+  echo "Please wait, starting development environment dependencies..."
   docker-compose up -d dind redis rabbitmq
-  echo "Components started, we will now enter the development environment"
-  echo "If you're not a VIM user and wish to access the code on your host"
-  echo "You can do so with an nfs share:"
-  echo " - docker-compose up -d nfs"
-  echo " - docker-compose logs --follow nfs"
-  echo "NFS takes a while to start for some reason, wait until you"
-  echo "see a message that say 'Starting Mountd in the background...' and then"
-  echo "you can mount it with:"
-  echo " - sudo mount -t nfs -v -o vers=4,proto=tcp,port=1337,resvport 127.0.0.1:/ $PWD/code"
-  echo ""
+  echo "Entering devenv..."
   docker-compose run --rm devenv
 fi
