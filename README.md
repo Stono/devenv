@@ -27,5 +27,8 @@ As 95% of what i do involves docker, I needed docker available in my development
 ## Persistence
 I make use of two volumes, `code` which is mounted to `/storage`, where you should do all your work and `docker` which is mounted to `/var/lib/docker` in dind, to persist your images.  For convenience there is also a bind mount of `./host:/host`, in case you need to get anything out of the environment.
 
+## GPG
+If you use git-crypt/gpg etc, put a `gpg.key` in `./host` and it will be auto imported into the gpg2 keyring inside the container.
+
 ## Use
 Simply type `./start.sh`

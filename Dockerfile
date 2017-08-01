@@ -12,7 +12,7 @@ RUN yum -y -q install https://dl.fedoraproject.org/pub/epel/epel-release-latest-
     yum -y -q update && \
     # general shizzle we want
     yum -y -q install unzip jq gcc-c++ make git python-setuptools tar wget curl sudo \
-      which passwd cmake python-devel wemux tmux telnet httpie redis ansible-2.3.0* && \
+      which passwd cmake python-devel wemux tmux telnet httpie redis ansible && \
 		# rvm requirements
 		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel \
       libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
@@ -186,7 +186,7 @@ ENV CLI_PEOPLEDATA_VERSION=1.2.44
 RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$CLI_PEOPLEDATA_VERSION"
 
 # Fix all permissions
-RUN chown -R docker:docker /home/docker
+RUN sudo chown -R docker:docker /home/docker
 ENTRYPOINT ["/bin/bash", "--login"]
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]
