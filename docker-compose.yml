@@ -8,6 +8,7 @@ services:
     volumes:
       - ~/.ssh:/home/docker/.ssh:ro
       - ~/.gitconfig:/home/docker/.gitconfig:ro
+      - ~/.config/gcloud:/home/docker/.config/gcloud
       - ./host:/host
       - code:/storage
     environment:
