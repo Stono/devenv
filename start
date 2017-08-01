@@ -5,7 +5,7 @@ else
   docker-compose up -d samba dind redis rabbitmq
   echo "Will now samba mount the code to ./code"
   echo "When prompted, the password is 'code'"
-  mount_smbfs //code@127.0.0.1:139/code $PWD/code
+  #mount_smbfs //code@127.0.0.1:139/code $PWD/code
   docker-compose run --rm devenv
-  umount $PWD/code
+  #umount $PWD/code
 fi

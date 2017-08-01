@@ -16,9 +16,12 @@ services:
 
   samba:
     image: dperson/samba
-    command: -u "code;code" -s "code;/code"
+    command: -u "docker;docker" -s "code;/code;yes;no;no;docker;docker;docker"
     volumes:
       - code:/code
+    environment:
+      - USERID=1000
+      - GROUPID=1000
     ports:
       - 127.0.0.1:139:139
 
