@@ -2,6 +2,10 @@
 if [ "$(docker-compose ps -q devenv | wc -l | xargs)" = "1" ]; then
   docker exec -it $(docker-compose ps -q devenv) /bin/bash --login
 else
-  docker-compose up -d dind redis rabbitmq
+  docker-compose up -d samba dind redis rabbitmq
+  echo "Will now samba mount the code to ./code"
+  echo "When prompted, the password is 'code'"
+  mount_smbfs //code@127.0.0.1:139/code $PWD/code
   docker-compose run --rm devenv
+  umount $PWD/code
 fi
