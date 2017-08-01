@@ -15,13 +15,16 @@ services:
       - DOCKER_HOST=tcp://127.0.0.1:2375
 
   nfs:
-    image: erezhorev/dockerized_nfs_server
+    image: itsthenetwork/nfs-server-alpine:latest
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
     volumes:
-      - code:/exports
-    cap_add:
-      - SYS_ADMIN
+      - code:/nfsshare
+    environment:
+      - SHARED_DIRECTORY=/nfsshare
+    privileged: true
     ports:
-      - 2049:2049
+      - 127.0.0.1:1337:2049
 
   dind:
     image: docker:stable-dind
