@@ -33,12 +33,9 @@ There are several volumes being used:
 ### code:/storage
 This is a docker volume, and your working directory inside the environment.  The reason we don't mount a host volume here is because we don't want invalid file permissions, or things in `node_modules` that are compiled against your host OS rather than the devenv.  As a result, you should be cloning and working inside the devenv.
 
-The reason I use a docker named volume rather than a bind mount to your host is because the performance of bind mounts is significantly worse than using native storage for MacOSX hosts.  This is because the mount has to bridge the QEMU2 virtual machine.   This is even worse for situations where there are lots of files, for example a `node_modules` directory.
+The reason I use a docker named volume rather than a bind mount to your host is because the performance of bind mounts is significantly worse than using native storage for MacOSX hosts.  This is because the mount has to bridge the QEMU2 virtual machine.   This is even worse for situations where there are lots of files, for example a `node_modules` directory.  This issue is compounded even further because the file permissions are different on your host than they are inside docker, so things *can* just get messy.
 
 **If you're not a VIM user** and want to edit files on your host, simply edit lines 16 and 27 in `docker-compose.yml` to be `./code` instead of `code`, and it'll mount the local folder `./code` instead.
-
-#### Samba sharing of /code
-To accomodate those of you which don't use VIM as an editor, all of the code from the docker named volume is exposed as a samba share.  When you run `./start` - you'll notice you're prompted for the samba mount.  Once you're in the devenv, all of the code is accessible on `./code`.
 
 ### docker:/var/lib/docker
 This is a volume used for persistence of the docker-in-docker stuff.  IE.  Any `docker build/pull` you do inside the devenv persists here.
