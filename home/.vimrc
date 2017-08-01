@@ -1,4 +1,5 @@
 set nocompatible | filetype indent plugin on | syn on
+set encoding=utf-8
 
 " Enable 256 colors
 set t_Co=256
@@ -33,7 +34,7 @@ VAMActivate
  \ vim-gitgutter
  \ editorconfig-vim
  \ vim-spec
- \ nerdtree 
+ \ nerdtree
  \ tlib_vim
  \ vim-addon-commenting
  \ vim-autoformat
