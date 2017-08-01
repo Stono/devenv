@@ -185,6 +185,8 @@ RUN /bin/bash -l -c "npm config set package-lock false"
 ENV CLI_PEOPLEDATA_VERSION=1.2.44
 RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$CLI_PEOPLEDATA_VERSION"
 
+# Fix all permissions
+RUN chown -R docker:docker /home/docker
 ENTRYPOINT ["/bin/bash", "--login"]
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]
