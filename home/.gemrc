@@ -1,1 +1,10 @@
-gem: --no-rdoc --no-ri
+---
+gem: --no-document
+benchmark: false
+verbose: true
+update_sources: true
+sources:
+- https://gems.rubyforge.org/
+- https://rubygems.org/
+backtrace: true
+bulk_threshold: 1000

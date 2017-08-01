@@ -174,7 +174,6 @@ RUN sudo gcloud config set --installation component_manager/disable_update_check
 # Add Ruby and RVM
 ENV RUBY_VERSION=2.4
 RUN /bin/bash -l -c "rvm install $RUBY_VERSION"
-COPY .gemrc /home/docker/.gemrc
 RUN /bin/bash -l -c "gem install bundler bundler-audit"
 
 # Add NodeJS
