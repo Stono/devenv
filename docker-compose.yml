@@ -21,6 +21,9 @@ services:
     image: docker:stable-dind
     restart: always
     volumes:
+      # If you want to edit files on your host
+      # change this to ./code:/storage, it will be
+      # slower though as bind mounts suck.
       - code:/storage
       - docker:/var/lib/docker
     privileged: true

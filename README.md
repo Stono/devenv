@@ -35,6 +35,8 @@ This is a docker volume, and your working directory inside the environment.  The
 
 The reason I use a docker named volume rather than a bind mount to your host is because the performance of bind mounts is significantly worse than using native storage for MacOSX hosts.  This is because the mount has to bridge the QEMU2 virtual machine.   This is even worse for situations where there are lots of files, for example a `node_modules` directory.
 
+**If you're not a VIM user** and want to edit files on your host, simply edit lines 16 and 27 in `docker-compose.yml` to be `./code` instead of `code`, and it'll mount the local folder `./code` instead.
+
 #### Samba sharing of /code
 To accomodate those of you which don't use VIM as an editor, all of the code from the docker named volume is exposed as a samba share.  When you run `./start` - you'll notice you're prompted for the samba mount.  Once you're in the devenv, all of the code is accessible on `./code`.
 
