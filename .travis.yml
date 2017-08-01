@@ -1,0 +1,24 @@
+sudo: required
+
+services:
+  - docker
+
+language: bash
+
+notifications:
+  email: false
+
+branches:
+  only:
+    - master
+
+before_script:
+  - sudo sysctl -w vm.max_map_count=262144
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker pull stono/devenv:latest
+
+script:
+  - docker build -f Dockerfile -t stono/devenv --cache-from stono/devenv .
+
+after_success:
+  - docker push stono/devenv

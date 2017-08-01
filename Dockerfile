@@ -8,12 +8,43 @@ RUN sed -i '/enabled=1/ c\enabled=0' /etc/yum/pluginconf.d/fastestmirror.conf
 ENV TERM xterm-256color
 
 # Install the EPEL repository and do a yum update
-RUN yum -y -q install http://www.mirrorservice.org/sites/dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm && \
+RUN yum -y -q install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum -y -q update && \
-    yum -y -q install gcc-c++ make git python-setuptools tar wget curl sudo which passwd vim cmake python-devel wemux tmux telnet httpie redis ansible-2.3.0* && \
+    # general shizzle we want
+    yum -y -q install unzip jq gcc-c++ make git python-setuptools tar wget curl sudo \
+      which passwd cmake python-devel wemux tmux telnet httpie redis ansible-2.3.0* && \
 		# rvm requirements
-		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
+		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel \
+      libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
+    # vim requirements
+    yum -y -q install lua lua-devel luajit luajit-devel ctags git python python-devel \
+      python3 python3-devel tcl-devel perl perl-devel perl-ExtUtils-ParseXS \
+      perl-ExtUtils-XSpp perl-ExtUtils-CBuilder perl-ExtUtils-Embed && \
     yum -y -q clean all
+
+# Compile VIM 8.0, like a boss
+RUN cd /tmp && \
+    git clone --depth=1 https://github.com/vim/vim.git && \
+    cd vim && \
+    ./configure --with-features=huge \
+            --enable-multibyte \
+            --enable-rubyinterp=yes \
+            --enable-pythoninterp=yes \
+            --with-python-config-dir=/usr/lib/python2.7/config \
+            --enable-python3interp=yes \
+            --with-python3-config-dir=/usr/lib/python3.5/config \
+            --enable-perlinterp=yes \
+            --enable-luainterp=yes \
+            --enable-gui=gtk2 \
+            --enable-cscope \
+            --prefix=/usr/local && \
+    make VIMRUNTIMEDIR=/usr/local/share/vim/vim80 && \
+    make install && \
+    rm -rf /tmp/vim* && \
+    update-alternatives --install /usr/bin/editor editor /usr/bin/vim 1 && \
+    update-alternatives --set editor /usr/bin/vim && \
+    update-alternatives --install /usr/bin/vi vi /usr/bin/vim 1 &&\
+    update-alternatives --set vi /usr/bin/vim
 
 # Add the profile scripts
 COPY scripts/* /usr/local/bin/
@@ -23,7 +54,8 @@ RUN cd /usr/local/bin && \
 		wget --quiet https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
 
 RUN groupadd docker && \
-    useradd -g docker docker
+    useradd -g docker docker && \
+    echo 'docker ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 RUN mkdir -p /storage
 WORKDIR /storage
@@ -86,11 +118,73 @@ RUN cd $HOME/.vim/vim-addons/YouCompleteMe && \
    	git submodule update --init --recursive && \
 		./install.sh
 
-# Add NodeJS
-RUN /bin/bash -l -c "nvm install 7.9"
+# Setup git-crypt
+RUN cd /tmp && \
+    git clone --depth=1 https://github.com/AGWA/git-crypt && \
+    cd git-crypt && \
+    make && \
+    sudo make install PREFIX=/usr/local && \
+    rm -rf /tmp/git-crypt*
+
+# Terraform
+ENV TERRAFORM_VERSION=0.9.11
+RUN cd /tmp && \
+    wget --quiet https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/terraform_$TERRAFORM_VERSION\_linux_amd64.zip && \
+    unzip terraform_*.zip && \
+    sudo mv terraform /usr/local/bin && \
+    rm -rf *terraform*
+
+# Download docker, the version that is compatible GKE
+ENV DOCKER_VERSION=17.06.0
+RUN cd /tmp && \
+    wget --quiet https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-$DOCKER_VERSION.ce-1.el7.centos.x86_64.rpm && \
+    sudo yum -y -q install docker-ce-*.rpm && \
+    rm -rf docker*
+
+# Download docker-compose, again the version that is compatible with GKE
+ENV COMPOSE_VERSION=1.14.0
+RUN cd /usr/local/bin && \
+    sudo wget --quiet https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` && \
+    sudo mv docker-compose-* docker-compose && \
+    sudo chmod +x /usr/local/bin/docker-compose && \
+    sudo ln -s /usr/local/bin/docker-compose /bin/docker-compose
+
+# Setup GCloud CLI
+ENV CLOUD_SDK_VERSION 163.0.0
+ENV CLOUDSDK_INSTALL_DIR /usr/lib64/google-cloud-sdk
+ENV CLOUD_SDK_REPO cloud-sdk-trusty
+ENV CLOUDSDK_PYTHON_SITEPACKAGES 1
+COPY gcloud.repo /etc/yum.repos.d/
+RUN sudo yum -y -q update && \
+    sudo yum -y -q install google-cloud-sdk-$CLOUD_SDK_VERSION* && \
+    sudo yum -y -q clean all
+RUN sudo mkdir -p /etc/gcloud/keys
+
+# Setup Kubernetes CLI
+ENV KUBECTL_VERSION=1.7.1
+RUN cd /usr/local/bin && \
+    sudo wget --quiet https://storage.googleapis.com/kubernetes-release/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl && \
+    sudo chmod +x kubectl
+
+# Disable google cloud auto update... we should be pushing a new agent container
+RUN sudo gcloud config set --installation component_manager/disable_update_check true && \
+    gcloud config set component_manager/disable_update_check true && \
+    gcloud config set core/disable_usage_reporting true
 
 # Add Ruby and RVM
-RUN /bin/bash -l -c "rvm install 2.4"
+ENV RUBY_VERSION=2.4
+RUN /bin/bash -l -c "rvm install $RUBY_VERSION"
+COPY .gemrc /home/docker/.gemrc
 RUN /bin/bash -l -c "gem install bundler bundler-audit"
 
-RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner"
+# Add NodeJS
+ENV NODEJS_VERSION=8.1.4
+RUN /bin/bash -l -c "nvm install $NODEJS_VERSION && nvm use $NODEJS_VERSION"
+RUN /bin/bash -l -c "npm config set package-lock false"
+
+ENV CLI_PEOPLEDATA_VERSION=1.2.44
+RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$CLI_PEOPLEDATA_VERSION"
+
+ENTRYPOINT ["/bin/bash", "--login"]
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+CMD ["/usr/local/bin/entrypoint.sh"]

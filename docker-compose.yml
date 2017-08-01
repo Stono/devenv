@@ -7,17 +7,32 @@ services:
     command: sleep infinity
     ports:
       - 15672:15672
+      - 6379:6379
+      - 5000:5000
+      - 9000:9000
+      - 9001:9001
+      - 9002:9002
+      - 9003:9003
 
   devenv:
     image: stono/devenv
     network_mode: 'service:bridge'
-    command: /bin/bash
     build: .
     volumes:
       - ~/.ssh:/home/docker/.ssh:ro
-      - ~/.gitconfig:/home/docker/.gitconfig
-      - code:/storage
+      - ~/.gitconfig:/home/docker/.gitconfig:ro
       - ./host:/host
+      - code:/storage
+    environment:
+      - DOCKER_HOST=tcp://127.0.0.1:2375
+
+  dind:
+    image: docker:stable-dind
+    restart: always
+    network_mode: 'service:bridge'
+    volumes:
+      - code:/storage
+    privileged: true
 
   redis:
     image: redis:3.2.8
