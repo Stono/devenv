@@ -1,23 +1,10 @@
 version: '3'
 
 services:
-  bridge:
-    build: .
-    restart: always
-    command: sleep infinity
-    ports:
-      - 15672:15672
-      - 6379:6379
-      - 5000:5000
-      - 9000:9000
-      - 9001:9001
-      - 9002:9002
-      - 9003:9003
-
   devenv:
     image: stono/devenv
-    network_mode: 'service:bridge'
     build: .
+    network_mode: 'service:dind'
     volumes:
       - ~/.ssh:/home/docker/.ssh:ro
       - ~/.gitconfig:/home/docker/.gitconfig:ro
@@ -29,20 +16,35 @@ services:
   dind:
     image: docker:stable-dind
     restart: always
-    network_mode: 'service:bridge'
     volumes:
       - code:/storage
+      - docker:/var/lib/docker
     privileged: true
+    # May need to change this depending on the output
+    # of docker info | grep -i "storage driver"
+    command: --storage-driver=overlay
+    ports:
+      - 15672:15672 # RabbitMQ
+      - 5672:5672   # RabbitMQ
+      - 6379:6379   # Redis
+      # Apps
+      - 5000:5000
+      - 9000:9000
+      - 9001:9001
+      - 9002:9002
+      - 9003:9003
 
+  # Examples of services exposed on the devenv localhost
   redis:
     image: redis:3.2.8
-    network_mode: 'service:bridge'
+    network_mode: 'service:dind'
     restart: always
 
   rabbitmq:
     image: rabbitmq:3.6.9-management
-    network_mode: 'service:bridge'
+    network_mode: 'service:dind'
     restart: always
 
 volumes:
   code:
+  docker:
