@@ -25,5 +25,6 @@ echo " - ruby:      $RUBY_VERSION"
 echo " - gcloud:    $CLOUD_SDK_VERSION"
 echo " - kubectl:   $KUBECTL_VERSION"
 echo " - terraform: $TERRAFORM_VERSION"
+echo " - ansible:   $(ansible --version | head -n 1 | awk '{print $2}')"
 
 /bin/bash --login

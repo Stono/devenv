@@ -14,21 +14,35 @@ The following components are installed:
   - gcloud:    163.0.0
   - kubectl:   1.7.1
   - terraform: 0.9.11
+  - ansible:   2.3.1.0
 
-### VIM
+### VIM (as an IDE)
 Vim is a compiled latest version (8) from the vim repo.  It is then configured with a whole bunch of extensions (see the Dockerfile) to basically turn it into a terminal IDE.
 
+![IDE](images/ide.png)
+
 ### Node/Ruby
-I'm using nvm and rvm for both.
+I'm using nvm and rvm for both.  The versions I've installed by default are listed above.
 
 ### Docker in Docker
 As 95% of what i do involves docker, I needed docker available in my development environment.  I didn't want to be mounting the docker socket from my host, I wanted something totally isolated.  As a result I use docker-in-docker which gives you an isolated instance of docker inside the development environment.
 
 ## Persistence
-I make use of two volumes, `code` which is mounted to `/storage`, where you should do all your work and `docker` which is mounted to `/var/lib/docker` in dind, to persist your images.  For convenience there is also a bind mount of `./host:/host`, in case you need to get anything out of the environment.
+There are several volumes being used:
+
+### code:/storage
+This is a docker volume, and your working directory inside the environment.  The reason we don't mount a host volume here is because we don't want invalid file permissions, or things in `node_modules` that are compiled against your host OS rather than the devenv.  As a result, you should be cloning and working inside the devenv.
+
+### docker:/var/lib/docker
+This is a volume used for persistence of the docker-in-docker stuff.  IE.  Any `docker build/pull` you do inside the devenv persists here.
+
+### ./host:/host
+This is a bind mount from your host into the environment, in case you do need to copy anything easily between devenv and your host.  The only real use I have for this at the moment is to import my GPG key.
 
 ## GPG
 If you use git-crypt/gpg etc, put a `gpg.key` in `./host` and it will be auto imported into the gpg2 keyring inside the container.
 
 ## Use
 Simply type `./start.sh`
+
+![Running](images/running.png)
