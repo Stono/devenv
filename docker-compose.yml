@@ -3,7 +3,6 @@ version: '3'
 services:
   devenv:
     image: stono/devenv
-    build: .
     network_mode: 'service:dind'
     volumes:
       - ~/.ssh:/home/docker/.ssh:ro
