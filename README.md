@@ -3,6 +3,8 @@ This is my entire development environment, inside a set of containers.
 
 The purpose here is that I can easily lift and shift my entire environment between machines, and ensure consistency across every environment.
 
+There is also the fact that I don't trust a lot of modules that we install in NPM, Ruby etc, so I want to do all my development in an environment which is as isolated as possible from my host machine.
+
 ## Components
 The following components are installed:
 
