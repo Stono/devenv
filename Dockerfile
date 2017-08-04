@@ -127,6 +127,7 @@ RUN mkdir -p $HOME/.vim/vim-addons && \
 
 # Compile YouCompleteMe
 RUN cd $HOME/.vim/vim-addons/YouCompleteMe && \
+    git config core.sparsecheckout true && \
    	git submodule update --init --recursive && \
 		./install.sh
 
@@ -162,7 +163,7 @@ RUN cd /usr/local/bin && \
     sudo ln -s /usr/local/bin/docker-compose /bin/docker-compose
 
 # Setup GCloud CLI
-ENV CLOUD_SDK_VERSION 163.0.0
+ENV CLOUD_SDK_VERSION 165.0.0
 ENV CLOUDSDK_INSTALL_DIR /usr/lib64/google-cloud-sdk
 ENV CLOUD_SDK_REPO cloud-sdk-trusty
 ENV CLOUDSDK_PYTHON_SITEPACKAGES 1
@@ -173,7 +174,7 @@ RUN sudo yum -y -q update && \
 RUN sudo mkdir -p /etc/gcloud/keys
 
 # Setup Kubernetes CLI
-ENV KUBECTL_VERSION=1.7.1
+ENV KUBECTL_VERSION=1.7.2
 RUN cd /usr/local/bin && \
     sudo wget --quiet https://storage.googleapis.com/kubernetes-release/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl && \
     sudo chmod +x kubectl
@@ -185,18 +186,17 @@ RUN sudo gcloud config set --installation component_manager/disable_update_check
 
 # Add Ruby and RVM
 ENV RUBY_VERSION=2.4
-RUN /bin/bash -l -c "rvm install $RUBY_VERSION"
+RUN /bin/bash -l -c "rvm install $RUBY_VERSION && rvm cleanup all"
 RUN /bin/bash -l -c "gem install bundler bundler-audit"
 
 # Add NodeJS
 ENV NODEJS_VERSION=8.1.4
-RUN /bin/bash -l -c "nvm install $NODEJS_VERSION && nvm use $NODEJS_VERSION"
+RUN /bin/bash -l -c "nvm install $NODEJS_VERSION && nvm use $NODEJS_VERSION && nvm cache clear"
 
 ENV CLI_PEOPLEDATA_VERSION=1.2.44
-RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$CLI_PEOPLEDATA_VERSION"
+RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$CLI_PEOPLEDATA_VERSION && npm cache clean --force"
 
 # Fix all permissions
-RUN sudo chown -R docker:docker /home/docker
 ENTRYPOINT ["/bin/bash", "--login"]
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]
