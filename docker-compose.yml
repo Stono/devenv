@@ -13,6 +13,10 @@ services:
       # change this to ./code:/storage, it will be
       # slower though as bind mounts suck.
       - code:/storage
+    depends_on:
+      - dind
+      - redis
+      - rabbitmq
     environment:
       - DOCKER_HOST=tcp://127.0.0.1:2375
 

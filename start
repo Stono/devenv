@@ -4,6 +4,6 @@ if [ "$(docker-compose ps -q devenv | wc -l | xargs)" = "1" ]; then
 else
   echo "Please wait, starting development environment dependencies..."
   docker-compose up -d dind redis rabbitmq
-  echo "Entering devenv..."
+  echo "Dependencies started, entering development environment..."
   docker-compose run --rm devenv
 fi
