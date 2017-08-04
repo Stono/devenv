@@ -42,6 +42,9 @@ The reason I use a docker named volume rather than a bind mount to your host is 
 ### docker:/var/lib/docker
 This is a volume used for persistence of the docker-in-docker stuff.  IE.  Any `docker build/pull` you do inside the devenv persists here.
 
+### config:~/.config
+This creates persistence for the `~/.config` directory, for things like gcloud and kubernetes credentials
+
 ### ./host:/host
 This is a bind mount from your host into the environment, in case you do need to copy anything easily between devenv and your host.  The only real use I have for this at the moment is to import my GPG key.
 
