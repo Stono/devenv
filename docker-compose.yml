@@ -5,9 +5,9 @@ services:
     image: stono/devenv
     network_mode: 'service:dind'
     volumes:
+      - home:/home/docker
       - ~/.ssh:/home/docker/.ssh:ro
       - ~/.gitconfig:/home/docker/.gitconfig:ro
-      - config:/home/docker/.config
       - ./host:/host
       # If you want to edit files on your host
       # change this to ./code:/storage, it will be
@@ -54,4 +54,4 @@ services:
 volumes:
   code:
   docker:
-  config:
+  home:

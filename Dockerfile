@@ -8,15 +8,15 @@ RUN sed -i '/enabled=1/ c\enabled=0' /etc/yum/pluginconf.d/fastestmirror.conf
 ENV TERM xterm-256color
 
 # Install the EPEL repository and do a yum update
+# general shizzle we want
+# rvm requirements
+# vim requirements
 RUN yum -y -q install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum -y -q update && \
-    # general shizzle we want
     yum -y -q install unzip jq gcc-c++ make git python-setuptools tar wget curl sudo \
       which passwd cmake python-devel wemux tmux telnet httpie redis ansible libaio && \
-		# rvm requirements
 		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel \
       libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
-    # vim requirements
     yum -y -q install lua lua-devel luajit luajit-devel ctags git python python-devel \
       python3 python3-devel tcl-devel perl perl-devel perl-ExtUtils-ParseXS \
       perl-ExtUtils-XSpp perl-ExtUtils-CBuilder perl-ExtUtils-Embed && \
@@ -200,3 +200,6 @@ RUN sudo chown -R docker:docker /home/docker
 ENTRYPOINT ["/bin/bash", "--login"]
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]
+
+VOLUME /home/docker
+VOLUME /storage
