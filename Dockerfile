@@ -12,7 +12,7 @@ RUN yum -y -q install https://dl.fedoraproject.org/pub/epel/epel-release-latest-
     yum -y -q update && \
     # general shizzle we want
     yum -y -q install unzip jq gcc-c++ make git python-setuptools tar wget curl sudo \
-      which passwd cmake python-devel wemux tmux telnet httpie redis ansible && \
+      which passwd cmake python-devel wemux tmux telnet httpie redis ansible libaio && \
 		# rvm requirements
 		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel \
       libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
@@ -60,6 +60,18 @@ RUN groupadd docker && \
 RUN mkdir -p /storage
 WORKDIR /storage
 RUN chown docker:docker /storage
+
+# These modules are required when compiling npm modules that talk to oracle
+ENV DL_HOST=http://ftp.riken.jp/Linux/cern/centos/7/cernonly/x86_64/Packages/
+RUN cd /tmp && \
+    wget -q $DL_HOST/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm && \
+    rpm -ivh oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm && \
+    rm -f oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm
+
+RUN cd /tmp && \
+    wget -q $DL_HOST/oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm && \
+    rpm -ivh oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm && \
+    rm -f oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm
 
 USER docker
 ENV HOME=/home/docker
