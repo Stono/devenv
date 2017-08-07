@@ -14,7 +14,7 @@ ENV TERM xterm-256color
 RUN yum -y -q install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum -y -q update && \
     yum -y -q install unzip jq gcc-c++ make git python-setuptools tar wget curl sudo \
-      which passwd cmake python-devel wemux tmux telnet httpie redis ansible libaio && \
+      which passwd cmake python-devel wemux tmux telnet httpie redis ansible libaio gettext && \
 		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel \
       libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
     yum -y -q install lua lua-devel luajit luajit-devel ctags git python python-devel \
