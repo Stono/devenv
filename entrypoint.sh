@@ -16,15 +16,7 @@ else
 fi
 
 echo ""
-echo "Installed component version:"
-echo " - vim:       $(vim --version | head -n 1 | awk '{print $5}')"
-echo " - docker:    $DOCKER_VERSION"
-echo " - compose:   $COMPOSE_VERSION"
-echo " - nodejs:    $NODEJS_VERSION"
-echo " - ruby:      $RUBY_VERSION"
-echo " - gcloud:    $CLOUD_SDK_VERSION"
-echo " - kubectl:   $KUBECTL_VERSION"
-echo " - terraform: $TERRAFORM_VERSION"
-echo " - ansible:   $(ansible --version | head -n 1 | awk '{print $2}')"
+
+cat /.devenv-versions
 
 /bin/bash --login

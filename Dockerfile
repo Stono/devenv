@@ -140,43 +140,43 @@ RUN cd /tmp && \
     rm -rf /tmp/git-crypt*
 
 # Terraform
-ENV TERRAFORM_VERSION=0.9.11
+ARG DEVENV_TERRAFORM_VERSION
 RUN cd /tmp && \
-    wget --quiet https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/terraform_$TERRAFORM_VERSION\_linux_amd64.zip && \
+    wget --quiet https://releases.hashicorp.com/terraform/$DEVENV_TERRAFORM_VERSION/terraform_$DEVENV_TERRAFORM_VERSION\_linux_amd64.zip && \
     unzip terraform_*.zip && \
     sudo mv terraform /usr/local/bin && \
     rm -rf *terraform*
 
 # Download docker, the version that is compatible GKE
-ENV DOCKER_VERSION=17.06.0
+ARG DEVENV_DOCKER_VERSION
 RUN cd /tmp && \
-    wget --quiet https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-$DOCKER_VERSION.ce-1.el7.centos.x86_64.rpm && \
+    wget --quiet https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-$DEVENV_DOCKER_VERSION.ce-1.el7.centos.x86_64.rpm && \
     sudo yum -y -q install docker-ce-*.rpm && \
     rm -rf docker*
 
 # Download docker-compose, again the version that is compatible with GKE
-ENV COMPOSE_VERSION=1.14.0
+ARG DEVENV_DOCKER_COMPOSE_VERSION
 RUN cd /usr/local/bin && \
-    sudo wget --quiet https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` && \
+    sudo wget --quiet https://github.com/docker/compose/releases/download/$DEVENV_DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` && \
     sudo mv docker-compose-* docker-compose && \
     sudo chmod +x /usr/local/bin/docker-compose && \
     sudo ln -s /usr/local/bin/docker-compose /bin/docker-compose
 
 # Setup GCloud CLI
-ENV CLOUD_SDK_VERSION 165.0.0
+ARG DEVENV_GCLOUD_VERSION
 ENV CLOUDSDK_INSTALL_DIR /usr/lib64/google-cloud-sdk
 ENV CLOUD_SDK_REPO cloud-sdk-trusty
 ENV CLOUDSDK_PYTHON_SITEPACKAGES 1
 COPY gcloud.repo /etc/yum.repos.d/
 RUN sudo yum -y -q update && \
-    sudo yum -y -q install google-cloud-sdk-$CLOUD_SDK_VERSION* && \
+    sudo yum -y -q install google-cloud-sdk-$DEVENV_GCLOUD_VERSION* && \
     sudo yum -y -q clean all
 RUN sudo mkdir -p /etc/gcloud/keys
 
 # Setup Kubernetes CLI
-ENV KUBECTL_VERSION=1.7.2
+ARG DEVENV_KUBECTL_VERSION
 RUN cd /usr/local/bin && \
-    sudo wget --quiet https://storage.googleapis.com/kubernetes-release/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl && \
+    sudo wget --quiet https://storage.googleapis.com/kubernetes-release/release/v$DEVENV_KUBECTL_VERSION/bin/linux/amd64/kubectl && \
     sudo chmod +x kubectl
 
 # Disable google cloud auto update... we should be pushing a new agent container
@@ -185,21 +185,22 @@ RUN sudo gcloud config set --installation component_manager/disable_update_check
     gcloud config set core/disable_usage_reporting true
 
 # Add Ruby and RVM
-ENV RUBY_VERSION=2.4
-RUN /bin/bash -l -c "rvm install $RUBY_VERSION && rvm cleanup all"
+ARG DEVENV_RUBY_VERSION
+RUN /bin/bash -l -c "rvm install $DEVENV_RUBY_VERSION && rvm cleanup all"
 RUN /bin/bash -l -c "gem install bundler bundler-audit"
 
 # Add NodeJS
-ENV NODEJS_VERSION=8.1.4
-RUN /bin/bash -l -c "nvm install $NODEJS_VERSION && nvm use $NODEJS_VERSION && nvm cache clear"
+ARG DEVENV_NODEJS_VERSION
+RUN /bin/bash -l -c "nvm install $DEVENV_NODEJS_VERSION && nvm use $DEVENV_NODEJS_VERSION && nvm cache clear"
 
 ENV CLI_PEOPLEDATA_VERSION=1.2.44
 RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$CLI_PEOPLEDATA_VERSION && npm cache clean --force"
 
 # Fix all permissions
 ENTRYPOINT ["/bin/bash", "--login"]
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]
-
 VOLUME /home/docker
-VOLUME /storage
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY versions.sh /usr/local/bin/versions.sh
+RUN /bin/bash --login -c "/usr/local/bin/versions.sh | sudo dd of=/.devenv-versions"

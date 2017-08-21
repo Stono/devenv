@@ -8,15 +8,17 @@ There is also the fact that I don't trust a lot of modules that we install in NP
 ## Components
 The following components are installed:
 
-  - vim:       8.0
-  - docker:    17.06.0
-  - compose:   1.14.0
-  - nodejs:    8.1.4
-  - ruby:      ruby-2.4.0
-  - gcloud:    163.0.0
-  - kubectl:   1.7.1
-  - terraform: 0.9.11
-  - ansible:   2.3.1.0
+  - vim
+  - docker
+  - compose
+  - nodejs
+  - ruby
+  - gcloud
+  - kubectl
+  - terraform
+  - ansible
+
+The versions of the components installed can be found in [.env](.env)
 
 ### VIM (as an IDE)
 Vim is a compiled latest version (8) from the vim repo.  It is then configured with a whole bunch of extensions (see the Dockerfile) to basically turn it into a terminal IDE.
