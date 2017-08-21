@@ -46,7 +46,7 @@ services:
 
   # Examples of services exposed on the devenv localhost
   redis:
-    image: redis:3.2.8
+    image: redis:4.0.1
     network_mode: 'service:dind'
     restart: always
 

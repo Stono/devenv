@@ -17,6 +17,7 @@ The following components are installed:
   - kubectl
   - terraform
   - ansible
+  - thefuck
 
 The versions of the components installed can be found in [.env](.env)
 

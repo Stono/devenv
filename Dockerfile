@@ -19,7 +19,7 @@ RUN yum -y -q install https://dl.fedoraproject.org/pub/epel/epel-release-latest-
       libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
     yum -y -q install lua lua-devel luajit luajit-devel ctags git python python-devel \
       python3 python3-devel tcl-devel perl perl-devel perl-ExtUtils-ParseXS \
-      perl-ExtUtils-XSpp perl-ExtUtils-CBuilder perl-ExtUtils-Embed && \
+      perl-ExtUtils-XSpp perl-ExtUtils-CBuilder perl-ExtUtils-Embed python-pip && \
     yum -y -q clean all
 
 # Compile VIM 8.0, like a boss
@@ -72,6 +72,8 @@ RUN cd /tmp && \
     wget -q $DL_HOST/oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm && \
     rpm -ivh oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm && \
     rm -f oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm
+
+RUN pip install thefuck
 
 USER docker
 ENV HOME=/home/docker
