@@ -1,22 +1,39 @@
 #!/bin/bash
-if [ -f /var/run/docker.sock ]; then
-  sudo chown docker:docker /var/run/docker.sock
-fi
+export TERM=xterm-256color
 
-echo "Initialising development environment"
+sred=$(tput setaf 1)
+swhite=$(tput setaf 7)
+sbold=$(tput bold)
+snormal=$(tput sgr0)
+
+function bold {
+  echo "${sbold}$*${snormal}"
+}
+
+function red {
+  echo "${sbold}${sred}$*${snormal}"
+}
+
+function white {
+  echo "${swhite}$*${snormal}"
+}
+
+bold "Initialising development environment"
 echo ""
 
 GPG_KEY=/host/gpg.key
 if [ ! -f "$GPG_KEY" ]; then
-  echo "WARNING: No GPG key found in $GPG_KEY"
-  echo " - git-crypt will not work!"
+  red "WARNING: No GPG key found in $GPG_KEY"
+  red " - git-crypt will not work!"
 else
-  echo Importing GPG key
+  bold Importing GPG key
   gpg --import $GPG_KEY
 fi
 
 echo ""
 
+bold "The following components are installed:"
 cat /.devenv-versions
 
+bold "Setup complete."
 /bin/bash --login

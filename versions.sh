@@ -1,6 +1,5 @@
 #!/bin/bash
 function versions() {
-  echo "The following component versions are installed:"
   echo " - vim:       $(vim --version | head -n 1 | awk '{print $5}')"
   echo " - docker:    $(docker --version | awk '{print $3}' | sed -e 's/,//g')"
   echo " - compose:   $(docker-compose --version | awk '{print $3}' | sed -e 's/,//g')"
