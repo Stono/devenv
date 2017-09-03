@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Please wait, stopping development environment dependencies..."
+docker-compose stop
+docker-compose rm -f

@@ -60,6 +60,6 @@ This is a bind mount from your host into the environment, in case you do need to
 If you use git-crypt/gpg etc, put a `gpg.key` in `./host` and it will be auto imported into the gpg2 keyring inside the container.
 
 ## Use
-Simply type `./start.sh`, I alias it in my `~/.zshrc` like this `alias devenv='cd ~/git/stono/devenv && ./start'`, so I can simply type `devenv` from the terminal to enter the environment.
+Simply type `./start.sh`, I alias it in my `~/.zshrc` like this `alias devenv='cd ~/git/stono/devenv && ./start && ./stop'`, so I can simply type `devenv` from the terminal to enter the environment.
 
 ![Running](images/running.png)
