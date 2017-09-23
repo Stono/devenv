@@ -195,8 +195,8 @@ RUN /bin/bash -l -c "gem install bundler bundler-audit"
 ARG DEVENV_NODEJS_VERSION
 RUN /bin/bash -l -c "nvm install $DEVENV_NODEJS_VERSION && nvm use $DEVENV_NODEJS_VERSION && nvm cache clear"
 
-ENV CLI_PEOPLEDATA_VERSION=1.2.44
-RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$CLI_PEOPLEDATA_VERSION && npm cache clean --force"
+ARG DEVENV_CLI_PEOPLEDATA_VERSION
+RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$DEVENV_CLI_PEOPLEDATA_VERSION && npm cache clean --force"
 
 # Fix all permissions
 ENTRYPOINT ["/bin/bash", "--login"]
