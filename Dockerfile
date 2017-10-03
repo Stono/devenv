@@ -63,15 +63,17 @@ RUN chown docker:docker /storage
 
 # These modules are required when compiling npm modules that talk to oracle
 ENV DL_HOST=http://ftp.riken.jp/Linux/cern/centos/7/cernonly/x86_64/Packages/
+ENV BASE_ORACLE_VERSION=12.2
+ENV ORACLE_VERSION=$BASE_ORACLE_VERSION.0.1.0-1
 RUN cd /tmp && \
-    wget -q $DL_HOST/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm && \
-    rpm -ivh oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm && \
-    rm -f oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm
+    wget -q $DL_HOST/oracle-instantclient$BASE_ORACLE_VERSION-basic-$ORACLE_VERSION.x86_64.rpm && \
+    rpm -ivh oracle-instantclient$BASE_ORACLE_VERSION-basic-$ORACLE_VERSION.x86_64.rpm && \
+    rm -f oracle-instantclient$BASE_ORACLE_VERSION-basic-$ORACLE_VERSION.x86_64.rpm
 
 RUN cd /tmp && \
-    wget -q $DL_HOST/oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm && \
-    rpm -ivh oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm && \
-    rm -f oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm
+    wget -q $DL_HOST/oracle-instantclient$BASE_ORACLE_VERSION-devel-$ORACLE_VERSION.x86_64.rpm && \
+    rpm -ivh oracle-instantclient$BASE_ORACLE_VERSION-devel-$ORACLE_VERSION.x86_64.rpm && \
+    rm -f oracle-instantclient$BASE_ORACLE_VERSION-devel-$ORACLE_VERSION.x86_64.rpm
 
 RUN pip install thefuck
 
@@ -196,7 +198,7 @@ ARG DEVENV_NODEJS_VERSION
 RUN /bin/bash -l -c "nvm install $DEVENV_NODEJS_VERSION && nvm use $DEVENV_NODEJS_VERSION && nvm cache clear"
 
 ARG DEVENV_CLI_PEOPLEDATA_VERSION
-RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner peopledata-cli@$DEVENV_CLI_PEOPLEDATA_VERSION && npm cache clean --force"
+RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner thoughtdata-cli peopledata-cli@$DEVENV_CLI_PEOPLEDATA_VERSION && npm cache clean --force"
 
 # Fix all permissions
 ENTRYPOINT ["/bin/bash", "--login"]
