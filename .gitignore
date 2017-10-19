@@ -2,3 +2,4 @@ storage/
 *.swp
 host/
 code/
+.DS_Store
