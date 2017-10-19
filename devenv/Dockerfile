@@ -96,16 +96,6 @@ RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A17031138
 # Add all our config files
 COPY home $HOME/
 
-# RVM
-RUN \curl -L https://get.rvm.io | bash -s stable
-
-# NVM
-RUN cd /tmp && \
-		wget --quiet https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh && \
-		chmod +x install.sh && \
-		./install.sh && \
-		rm install.sh
-
 # Clone on the .vimrc stuff
 RUN mkdir -p $HOME/.vim/vim-addons && \
     cd $HOME/.vim/vim-addons && \
@@ -142,6 +132,21 @@ RUN mkdir -p $HOME/.vim/vim-addons && \
 RUN cd $HOME/.vim/vim-addons/YouCompleteMe && \
     git config core.sparsecheckout true && \
    	git submodule update --init --recursive && \
+		./install.sh
+
+# RVM
+ENV RVM_DIR=/usr/local/rvm
+RUN sudo mkdir -p $RVM_DIR && \
+    sudo chown docker:docker $RVM_DIR && \
+    \curl -sSL https://get.rvm.io | bash -s -- --path $RVM_DIR
+
+# NVM
+ENV NVM_DIR=/usr/local/nvm
+RUN sudo mkdir -p $NVM_DIR && \
+    sudo chown docker:docker $NVM_DIR && \
+    cd /tmp && \
+		wget --quiet https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh && \
+		chmod +x install.sh && \
 		./install.sh
 
 # Setup git-crypt
@@ -206,11 +211,9 @@ RUN /bin/bash -l -c "gem install bundler bundler-audit"
 ARG DEVENV_NODEJS_VERSION
 RUN /bin/bash -l -c "nvm install $DEVENV_NODEJS_VERSION && nvm use $DEVENV_NODEJS_VERSION && nvm cache clear"
 
-ARG DEVENV_NPM_VERSION
-RUN /bin/bash -l -c "npm install -g npm@$DEVENV_NPM_VERSION"
-
 # Gotta manually update npm due to: https://github.com/creationix/nvm/issues/1637
-ENV NPM_DIR=/home/docker/.nvm/versions/node/v$DEVENV_NODEJS_VERSION/lib/node_modules/npm
+ARG DEVENV_NPM_VERSION
+ENV NPM_DIR=$NVM_DIR/versions/node/v$DEVENV_NODEJS_VERSION/lib/node_modules/npm
 RUN rm -rf $NPM_DIR && \
     mkdir $NPM_DIR && \
     curl -sL https://github.com/npm/npm/archive/v$DEVENV_NPM_VERSION.tar.gz | tar xz -C $NPM_DIR --strip-components=1 && \
