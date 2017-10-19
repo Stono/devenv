@@ -8,18 +8,27 @@ RUN sed -i '/enabled=1/ c\enabled=0' /etc/yum/pluginconf.d/fastestmirror.conf
 ENV TERM xterm-256color
 
 # Install the EPEL repository and do a yum update
-# general shizzle we want
+# Install general shizzle we want
 # rvm requirements
 # vim requirements
 RUN yum -y -q install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum -y -q update && \
-    yum -y -q install unzip jq gcc-c++ make git tar wget curl sudo \
-      which passwd cmake wemux tmux telnet httpie redis ansible libaio gettext && \
-		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel \
-      libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel \
-      lua lua-devel luajit luajit-devel ctags tcl-devel perl perl-devel perl-ExtUtils-ParseXS \
-      python34 python34-devel python34-pip python34-setuptools \
-      perl-ExtUtils-XSpp perl-ExtUtils-CBuilder perl-ExtUtils-Embed && \
+    yum -y -q install \
+    # Build tools
+    make gcc-c++ cmake autoconf patch automake \
+    # General Utils
+    unzip jq git wget sudo which wemux tmux telnet httpie redis ansible libaio gettext bzip2 \
+    # Build libraries
+		libyaml-devel readline-devel zlib-devel libffi-devel openssl-devel libtool bison sqlite-devel \
+    lua-devel luajit luajit-devel ctags tcl-devel libxml2-devel libxslt-devel \
+    # All the pythons
+    python34 python34-devel python34-pip python34-setuptools \
+    python27 python27-devel python27-pip python27-setuptools \
+    python-devel \
+    # And the perls
+    perl perl-devel perl-ExtUtils-ParseXS \
+    perl-ExtUtils-XSpp perl-ExtUtils-CBuilder perl-ExtUtils-Embed && \
+    # Clean up
     yum -y -q clean all
 
 # Compile VIM 8.0, like a boss
@@ -32,7 +41,7 @@ RUN cd /tmp && \
             --enable-pythoninterp=yes \
             --with-python-config-dir=/usr/lib/python2.7/config \
             --enable-python3interp=yes \
-            --with-python3-config-dir=/usr/lib/python3.5/config \
+            --with-python3-config-dir=/usr/lib/python3.4/config \
             --enable-perlinterp=yes \
             --enable-luainterp=yes \
             --enable-gui=gtk2 \
@@ -75,7 +84,7 @@ RUN cd /tmp && \
     rpm -ivh oracle-instantclient$BASE_ORACLE_VERSION-devel-$ORACLE_VERSION.x86_64.rpm && \
     rm -f oracle-instantclient$BASE_ORACLE_VERSION-devel-$ORACLE_VERSION.x86_64.rpm
 
-RUN pip install thefuck
+RUN pip3 install thefuck
 
 USER docker
 ENV HOME=/home/docker

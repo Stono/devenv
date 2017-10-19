@@ -20,6 +20,14 @@ services:
     environment:
       - DOCKER_HOST=tcp://127.0.0.1:2375
 
+  squid:
+    image: stono/squid
+    network_mode: 'service:dind'
+    depends_on:
+      - dind
+    volumes:
+      - squid:/mnt/squid
+
   dind:
     image: docker:stable-dind
     restart: always
@@ -51,7 +59,7 @@ services:
     restart: always
 
   rabbitmq:
-    image: rabbitmq:3.6.9-management
+    image: eu.gcr.io/peopledata-product-team/td.rabbitmq
     network_mode: 'service:dind'
     restart: always
 
@@ -59,3 +67,4 @@ volumes:
   code:
   docker:
   home:
+  squid:

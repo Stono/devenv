@@ -3,7 +3,7 @@ version: '3.2'
 services:
   devenv:
     build:
-      context: .
+      context: devenv/
       args:
         DEVENV_GCLOUD_VERSION: "${DEVENV_GCLOUD_VERSION}"
         DEVENV_DOCKER_VERSION: "${DEVENV_DOCKER_VERSION}"
@@ -11,4 +11,9 @@ services:
         DEVENV_KUBECTL_VERSION: "${DEVENV_KUBECTL_VERSION}"
         DEVENV_RUBY_VERSION: "${DEVENV_RUBY_VERSION}"
         DEVENV_NODEJS_VERSION: "${DEVENV_NODEJS_VERSION}"
+        DEVENV_NPM_VERSION: "${DEVENV_NPM_VERSION}"
         DEVENV_TERRAFORM_VERSION: "${DEVENV_TERRAFORM_VERSION}"
+
+  squid:
+    build:
+      context: squid/
