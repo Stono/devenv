@@ -207,7 +207,15 @@ ARG DEVENV_NODEJS_VERSION
 RUN /bin/bash -l -c "nvm install $DEVENV_NODEJS_VERSION && nvm use $DEVENV_NODEJS_VERSION && nvm cache clear"
 
 ARG DEVENV_NPM_VERSION
-RUN /bin/bash -l -c "npm install -g npm@DEVENV_NPM_VERSION"
+RUN /bin/bash -l -c "npm install -g npm@$DEVENV_NPM_VERSION"
+
+# Gotta manually update npm due to: https://github.com/creationix/nvm/issues/1637
+ENV NPM_DIR=/home/docker/.nvm/versions/node/v$DEVENV_NODEJS_VERSION/lib/node_modules/npm
+RUN rm -rf $NPM_DIR && \
+    mkdir $NPM_DIR && \
+    curl -sL https://github.com/npm/npm/archive/v$DEVENV_NPM_VERSION.tar.gz | tar xz -C $NPM_DIR --strip-components=1 && \
+    chown -R docker:docker $NPM_DIR
+
 RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner thoughtdata-cli && npm cache clean --force"
 
 # Fix all permissions
