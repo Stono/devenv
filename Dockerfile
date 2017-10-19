@@ -13,13 +13,13 @@ ENV TERM xterm-256color
 # vim requirements
 RUN yum -y -q install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum -y -q update && \
-    yum -y -q install unzip jq gcc-c++ make git python-setuptools tar wget curl sudo \
-      which passwd cmake python-devel wemux tmux telnet httpie redis ansible libaio gettext && \
+    yum -y -q install unzip jq gcc-c++ make git tar wget curl sudo \
+      which passwd cmake wemux tmux telnet httpie redis ansible libaio gettext && \
 		yum -y -q install patch libyaml-devel autoconf patch readline-devel zlib-devel \
-      libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel && \
-    yum -y -q install lua lua-devel luajit luajit-devel ctags git python python-devel \
-      python3 python3-devel tcl-devel perl perl-devel perl-ExtUtils-ParseXS \
-      perl-ExtUtils-XSpp perl-ExtUtils-CBuilder perl-ExtUtils-Embed python-pip && \
+      libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel \
+      lua lua-devel luajit luajit-devel ctags tcl-devel perl perl-devel perl-ExtUtils-ParseXS \
+      python34 python34-devel python34-pip python34-setuptools \
+      perl-ExtUtils-XSpp perl-ExtUtils-CBuilder perl-ExtUtils-Embed && \
     yum -y -q clean all
 
 # Compile VIM 8.0, like a boss
