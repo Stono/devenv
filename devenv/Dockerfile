@@ -95,6 +95,7 @@ RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A17031138
 
 # Add all our config files
 COPY home $HOME/
+RUN sudo chown -R docker:docker $HOME/
 
 # Clone on the .vimrc stuff
 RUN mkdir -p $HOME/.vim/vim-addons && \
@@ -210,6 +211,7 @@ RUN /bin/bash -l -c "gem install bundler bundler-audit"
 # Add NodeJS
 ARG DEVENV_NODEJS_VERSION
 RUN /bin/bash -l -c "nvm install $DEVENV_NODEJS_VERSION && nvm use $DEVENV_NODEJS_VERSION && nvm cache clear"
+RUN /bin/bash -l -c "npm config set package-lock false"
 
 # Gotta manually update npm due to: https://github.com/creationix/nvm/issues/1637
 ARG DEVENV_NPM_VERSION
