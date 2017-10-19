@@ -198,6 +198,8 @@ ARG DEVENV_NODEJS_VERSION
 RUN /bin/bash -l -c "nvm install $DEVENV_NODEJS_VERSION && nvm use $DEVENV_NODEJS_VERSION && nvm cache clear"
 
 ARG DEVENV_CLI_PEOPLEDATA_VERSION
+ARG DEVENV_NPM_VERSION
+RUN /bin/bash -l -c "npm install -g npm@DEVENV_NPM_VERSION"
 RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner thoughtdata-cli peopledata-cli@$DEVENV_CLI_PEOPLEDATA_VERSION && npm cache clean --force"
 
 # Fix all permissions
