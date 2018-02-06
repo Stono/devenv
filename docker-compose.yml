@@ -26,7 +26,7 @@ services:
       # If you want to edit files on your host
       # change this to ./code:/storage, it will be
       # slower though as bind mounts suck.
-      - code:/storage
+      - ./code:/storage
       - docker:/var/lib/docker
     privileged: true
     # May need to change this depending on the output
@@ -51,4 +51,3 @@ volumes:
   code:
   docker:
   home:
-  squid:
