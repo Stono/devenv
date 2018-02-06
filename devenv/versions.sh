@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 function versions() {
   echo " - vim:       $(vim --version | head -n 1 | awk '{print $5}')"
   echo " - docker:    $(docker --version | awk '{print $3}' | sed -e 's/,//g')"
@@ -9,6 +10,7 @@ function versions() {
   echo " - kubectl:   $(kubectl version | head -n 1 | awk -F "\"" '{print $6}')"
   echo " - terraform: $(terraform --version | head -n 1 | awk '{print $2}')"
   echo " - ansible:   $(ansible --version | head -n 1 | awk '{print $2}')"
+  echo " - golang:    $(go version | awk '{print $3}' | awk -Fgo '{print $2}')"
 }
 versions
 echo ""

@@ -16,17 +16,8 @@ services:
     depends_on:
       - dind
       - redis
-      - rabbitmq
     environment:
       - DOCKER_HOST=tcp://127.0.0.1:2375
-
-  squid:
-    image: stono/squid
-    network_mode: 'service:dind'
-    depends_on:
-      - dind
-    volumes:
-      - squid:/mnt/squid
 
   dind:
     image: docker:stable-dind
@@ -42,8 +33,6 @@ services:
     # of docker info | grep -i "storage driver"
     command: --storage-driver=overlay
     ports:
-      - 15672:15672 # RabbitMQ
-      - 5672:5672   # RabbitMQ
       - 6379:6379   # Redis
       # Apps
       - 5000:5000
@@ -55,11 +44,6 @@ services:
   # Examples of services exposed on the devenv localhost
   redis:
     image: redis:4.0.1
-    network_mode: 'service:dind'
-    restart: always
-
-  rabbitmq:
-    image: eu.gcr.io/peopledata-product-team/td.rabbitmq
     network_mode: 'service:dind'
     restart: always
 

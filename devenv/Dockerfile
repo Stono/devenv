@@ -91,7 +91,7 @@ ENV HOME=/home/docker
 ENV USER=docker
 
 # Gem GPG2
-RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+RUN gpg2 --keyserver hkp://keys.gnupg.net:80 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 
 # Add all our config files
 COPY home $HOME/
@@ -221,7 +221,22 @@ RUN rm -rf $NPM_DIR && \
     curl -sL https://github.com/npm/npm/archive/v$DEVENV_NPM_VERSION.tar.gz | tar xz -C $NPM_DIR --strip-components=1 && \
     chown -R docker:docker $NPM_DIR
 
-RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner thoughtdata-cli && npm cache clean --force"
+RUN /bin/bash -l -c "npm install -g --depth=0 --no-summary --quiet grunt-cli npm-check-updates nsp depcheck jshint hawkeye-scanner  && npm cache clean --force"
+
+# Add GoLANG
+ARG GOLANG_VERSION
+RUN cd /tmp && \
+    wget --quiet https://dl.google.com/go/go$GOLANG_VERSION.linux-amd64.tar.gz && \
+    tar xf go$GOLANG_VERSION.linux-amd64.tar.gz && \
+    sudo mv go /usr/local && \
+    rm -f go*
+
+ENV GOROOT /usr/local/go
+ENV GOPATH /storage/go
+ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
+
+RUN go get -u github.com/golang/lint/golint
+RUN go get -u github.com/golang/dep/cmd/dep
 
 # Fix all permissions
 ENTRYPOINT ["/bin/bash", "--login"]

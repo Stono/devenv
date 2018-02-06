@@ -13,7 +13,4 @@ services:
         DEVENV_NODEJS_VERSION: "${DEVENV_NODEJS_VERSION}"
         DEVENV_NPM_VERSION: "${DEVENV_NPM_VERSION}"
         DEVENV_TERRAFORM_VERSION: "${DEVENV_TERRAFORM_VERSION}"
-
-  squid:
-    build:
-      context: squid/
+        GOLANG_VERSION: "${GOLANG_VERSION}"

@@ -3,7 +3,7 @@ if [ "$(docker-compose ps -q devenv | wc -l | xargs)" = "1" ]; then
   docker exec -it $(docker-compose ps -q devenv) /bin/bash --login
 else
   echo "Please wait, starting development environment dependencies..."
-  docker-compose up -d dind redis rabbitmq
+  docker-compose up -d dind redis
   echo "Dependencies started, entering development environment..."
   docker-compose run --rm devenv
 fi
