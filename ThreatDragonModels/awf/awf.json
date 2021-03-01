@@ -1,0 +1,18 @@
+{
+  "summary": {
+    "title": "awf",
+    "owner": "awf",
+    "description": "awf"
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "title": "awda",
+        "thumbnail": "./public/content/images/thumbnail.jpg",
+        "id": 0
+      }
+    ],
+    "reviewer": "awf"
+  }
+}
